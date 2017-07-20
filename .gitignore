@@ -1,0 +1,9 @@
+# generated files
+**/.DS_Store
+
+# node modules
+/node_modules
+
+# static & build
+/static
+/build
