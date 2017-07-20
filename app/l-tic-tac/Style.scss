@@ -1,0 +1,17 @@
+.tic-tac {
+    display: flex;
+    height: 100%;
+    width: 100%;
+    margin-top: 50px;
+    justify-content: center;
+}
+.l-tic-tac {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.l-tic-tac__title {
+    margin: 10px 0;
+}
