@@ -29,7 +29,7 @@ class LTicTac extends React.Component {
     }
 
     handleClick(i) {
-        if(!this.winner) {
+        if((!this.winner) && this.state.counter < 9) {
             this.markDown(i);
             this.setWinner(this.hasWinner(i));
             this.congratulate();
@@ -84,7 +84,7 @@ class LTicTac extends React.Component {
             this.setState({
                 fieldsState: this.getNewFieldsState(i),
                 putDown: this.togglePutDown(),
-                counter: this.counter + 1
+                counter: this.state.counter + 1
             });
         }
     }
@@ -102,7 +102,9 @@ class LTicTac extends React.Component {
     congratulate() {
         if(this.winner) {
                 console.log(this.winner, ' is a winner!!!')
-            }
+        } else if(this.state.counter > 8) {
+            console.log('Game over.');
+        }
     }
 
     rootClass() {
