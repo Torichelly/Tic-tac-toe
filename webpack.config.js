@@ -52,9 +52,15 @@ webpackConfig = {
             allChunks: true
         }),
         new HtmlWebpackPlugin({
-            title: 'Chess etude',
+            title: 'Tic-tac-toe',
             filename: path.join(__dirname, "/static/index.html")
          })
-    ]
+    ],
+    watch: true,
+    watchOptions: {
+        ignored: /node_modules/,
+        aggregateTimeout: 300,
+        poll: 1000
+    }
 };
 module.exports = webpackConfig;

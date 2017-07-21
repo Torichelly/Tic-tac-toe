@@ -5,7 +5,12 @@ Install packages:
 npm i
 ```
 
-Build & Run
+Build & watch
 ```
-webpack && node app
+webpack
+```
+
+Run
+```
+node app
 ```

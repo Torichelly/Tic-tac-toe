@@ -45,6 +45,7 @@
     "html-webpack-plugin": "^2.29.0",
     "http": "0.0.0",
     "node-sass": "^4.5.3",
+    "open-browser-webpack-plugin": "0.0.5",
     "react": "^15.6.1",
     "react-dom": "^15.6.1",
     "resolve-url-loader": "^2.1.0",
