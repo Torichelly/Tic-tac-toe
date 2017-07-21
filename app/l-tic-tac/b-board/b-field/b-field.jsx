@@ -10,7 +10,6 @@ const Classes = {
 class BField extends React.Component {
     constructor(props) {
         super(props);
-        console.log('field', props);
     }
     
     render() {

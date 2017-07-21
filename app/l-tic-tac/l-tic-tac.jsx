@@ -17,10 +17,8 @@ class LTicTac extends React.Component {
             counter: 0,
             fieldsState: new Array(9).fill(null)
         }
-    }
 
-    componentDidMount() {
-        console.log(this.state);
+        this.winner = null;
     }
 
     render() {
@@ -31,12 +29,63 @@ class LTicTac extends React.Component {
     }
 
     handleClick(i) {
+        if(!this.winner) {
+            this.markDown(i);
+            this.setWinner(this.hasWinner(i));
+            this.congratulate();
+        } else {
+            console.log('Game over.');
+        }
+    }
+
+    setWinner(winner) {
+        this.winner = winner;
+    }
+
+    hasWinner() {
+        let combinations = [
+            [0,1,2],
+            [3,4,5],
+            [6,7,8],
+            [0,3,6],
+            [1,4,7],
+            [2,5,8],
+            [0,4,8],
+            [2,4,6]
+        ];
+
+        let getWinner = (combination) => {
+            let res;
+            let array = combination.map(
+                (i) => {
+                    // console.log('i', i, this.state.fieldsState[i]);
+                    return this.state.fieldsState[i];
+                }
+            );
+
+            res = (array[0] === array[1] && array[0] === array[2])? array[0]: null;
+            return res;
+        }
+
+        let winner = null;
+
+        combinations.forEach((combination) => {
+            let res = getWinner.bind(this)(combination);
+            if(res) {
+                winner = res;
+            }
+            return res;
+        });
+        return winner;
+    }
+
+    markDown(i) {
         if(!this.state.fieldsState[i]) {
             this.setState({
-            fieldsState: this.getNewFieldsState(i),
-            putDown: this.togglePutDown(),
-            counter: this.counter + 1
-        });
+                fieldsState: this.getNewFieldsState(i),
+                putDown: this.togglePutDown(),
+                counter: this.counter + 1
+            });
         }
     }
 
@@ -48,6 +97,12 @@ class LTicTac extends React.Component {
 
     togglePutDown() {
         return this.state.putDown == 'X'? 'O': 'X'; 
+    }
+
+    congratulate() {
+        if(this.winner) {
+                console.log(this.winner, ' is a winner!!!')
+            }
     }
 
     rootClass() {
