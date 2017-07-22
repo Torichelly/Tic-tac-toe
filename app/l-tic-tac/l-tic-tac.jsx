@@ -18,7 +18,7 @@ class LTicTac extends React.Component {
         super(props);
 
         this.state = {
-            putDown: Markers.CROSS,
+            marker: Markers.CROSS,
             counter: 0,
             fieldsState: new Array(9).fill(null)
         }
@@ -36,26 +36,7 @@ class LTicTac extends React.Component {
     }
 
     kernel(i) {
-        let onPlaying = (onGame, onEnd) => {
-            isOver()? onEnd(): onGame();
-        }
-
-        let onGame = () => {
-            markDown(i);
-            setWinner(hasWinner());
-            congratulateIfNeeded();
-        };
-
-        let onEnd = () => {
-            logWinner();
-        }
-
-        let setWinner = (winner) => {
-            this.winner = winner;
-        }
-
-        let hasWinner = () => {
-            let combinations = [
+        let combinations = [
                 [0,1,2],
                 [3,4,5],
                 [6,7,8],
@@ -64,8 +45,28 @@ class LTicTac extends React.Component {
                 [2,5,8],
                 [0,4,8],
                 [2,4,6]
-            ];
+        ];
+        let currentMarker = this.state.marker;
 
+        let play = (game, end) => {
+            isOver()? end(): game();
+        }
+
+        let game = () => {
+            markDown(i);
+            AIMarkDown();
+            congratulateIfNeeded();
+        };
+
+        let end = () => {
+            logWinner();
+        }
+
+        let setWinner = (winner) => {
+            this.winner = winner;
+        }
+
+        let hasWinner = () => {
             let getWinner = (combination) => {
                 let res;
                 let fields = combination.map(
@@ -74,7 +75,8 @@ class LTicTac extends React.Component {
                     }
                 );
 
-                res = (fields[0] === fields[1] && fields[0] === fields[2])? fields[0]: null;
+                res = (fields[0] === fields[1]&&
+                       fields[0] === fields[2])? fields[0]: null;
                 return res;
             }
 
@@ -91,29 +93,84 @@ class LTicTac extends React.Component {
         }
 
         let markDown = (i) => {
-            let newFieldsState = (i) => {
+            if(!isOver()){
+                let newFieldsState = (i) => {
                 let res = this.state.fieldsState;
-                res[i] = this.state.putDown;
+                res[i] = currentMarker;
                 return res;
-            };
+                };
 
-            if(!this.state.fieldsState[i]) {
-                this.setState({
-                    fieldsState: newFieldsState(i),
-                    putDown: togglePutDown(),
-                    counter: ++this.state.counter
-                });
+                if(!this.state.fieldsState[i]) {
+                    this.setState({
+                        fieldsState: newFieldsState(i),
+                        counter: ++this.state.counter
+                    });
+                }
+                currentMarker = toggleMarker(currentMarker);
+                setWinner(hasWinner());
             }
         }
 
-        let togglePutDown = () => {
-            return this.state.putDown == Markers.CROSS?
+        let AIMarkDown = () => {
+            let isEmpty = (i) => {
+                return this.state.fieldsState[i]? false: true;
+            };
+            let aimField = () => {
+                let res = null;
+                let criticalMove = (etalon) => {
+                    let {fieldsState} = this.state;
+                    for(let combination of combinations) {
+                        let state = combination.map((i) => {
+                            return fieldsState[i];
+                        });
+                        
+                        if(etalon == state[0] && etalon == state[1]&&
+                        isEmpty(combination[2])) {
+                            return combination[2];
+                        };
+                        if(etalon == state[0] && etalon == state[2]&&
+                        isEmpty(combination[1])) {
+                            return combination[1];
+                        };
+                        if(etalon == state[1] && etalon == state[2]&&
+                        isEmpty(combination[0])) {
+                            return combination[0];
+                        }   
+                    };
+
+                    return null;
+                }
+
+                res = criticalMove(currentMarker);
+
+                if (!res) {
+                    res = criticalMove(toggleMarker(currentMarker));
+                }
+
+                if(!res) {
+                    let fields = [];
+                    for (let i in this.state.fieldsState) {
+                        if (!this.state.fieldsState[i]) fields.push(i);
+                    }
+                    res = fields[Math.floor(Math.random() * fields.length)];
+                }
+                console.log(res);
+                return res;
+            };
+
+            markDown(aimField());
+        }
+
+        let toggleMarker = (marker) => {
+            return marker == Markers.CROSS?
                         Markers.CIRCLE: Markers.CROSS; 
         }
 
         let congratulateIfNeeded = () => {
             if(this.winner) {
                 console.log(this.winner, ' is a new winner!!!');
+            } else if (this.state.counter == 9) {
+                console.log('Ups, there is no winner.');
             }
         }
 
@@ -127,7 +184,7 @@ class LTicTac extends React.Component {
                 return this.winner || this.state.counter == 9;
         }
 
-        onPlaying(onGame, onEnd);
+        play(game, end);
     }
 
     rootClass() {
