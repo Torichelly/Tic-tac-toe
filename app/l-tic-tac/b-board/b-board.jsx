@@ -56,8 +56,10 @@ class BBoard extends React.Component {
         }
 
         let game = () => {
-            markDown(i);
-            AIMarkDown();
+            if(!this.state.fieldsState[i]) {
+                markDown(i);
+                AIMarkDown();
+            }
             congratulateIfNeeded();
         };
 
@@ -71,22 +73,19 @@ class BBoard extends React.Component {
 
         let hasWinner = () => {
             let getWinner = (combination) => {
-                let res;
                 let fields = combination.map(
                     (i) => {
                         return this.state.fieldsState[i];
                     }
                 );
-
-                res = (fields[0] === fields[1]&&
-                       fields[0] === fields[2])? fields[0]: null;
-                return res;
+            return (fields[0] === fields[1]&&
+                    fields[0] === fields[2])? fields[0]: null;
             }
 
             let winner = null;
 
             combinations.forEach((combination) => {
-                let res = getWinner.bind(this)(combination);
+                let res = getWinner(combination);
                 if(res) {
                     winner = res;
                 }
