@@ -149,14 +149,17 @@ class BBoard extends React.Component {
 
                     return null;
                 }
+                
+                if (this.state.counter < 2 && !this.state.fieldsState[4]) {
+                    return 4;
+                }
 
                 res = criticalMove(currentMarker);
-
-                if (!res) {
+                if (res == null) {
                     res = criticalMove(toggleMarker(currentMarker));
                 }
 
-                if(!res) {
+                if(res == null) {
                     res = randomMove();
                 }
                 
